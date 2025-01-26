@@ -3,10 +3,12 @@
 #include <math.h>
 #include <string.h>
 #include <limits.h>
+#include <assert.h>
 #include "stack.h"
 
 stackErrors stackCtor (stack_t* stk, size_t capacity)
 {
+    assert (stk);
     if (capacity < 1) return ERR;
     stk->capacity = capacity;
     //printf ("%zu\n%p\n%p\n", stk->capacity, stk, stk->data);
@@ -14,16 +16,16 @@ stackErrors stackCtor (stack_t* stk, size_t capacity)
     if (stk->data == nullptr) return DATA_EMPTY;
     stk->size = 0;
     //free (stk->data);
-    //for (size_t i = 0; i < capacity; i++)
-        //stk->data[i] = POISON;
+    for (size_t i = 0; i < capacity; i++)
+        stk->data[i] = POISON;
 
-    //STACK_CHECK
+    STACK_CHECK(stk);
     return OK;
 }
 
 stackErrors stackDtor (stack_t* stk)
 {
-    STACK_CHECK
+    STACK_CHECK(stk);
     free (stk->data);
     stk->data = nullptr;
     stk->size = INT_MAX;
@@ -54,20 +56,20 @@ stackErrors stackDump (stack_t* stk)
 
 stackErrors stackPush (stack_t* stk, stackElem value)
 {
-    STACK_CHECK
+    STACK_CHECK(stk);
     stk->data[stk->size+1] = value;
     (stk->size)++;
-    STACK_CHECK
+    STACK_CHECK(stk);
     return OK;
 }
 
 stackErrors stackPop (stack_t* stk, stackElem* value)
 {
-    STACK_CHECK
+    STACK_CHECK(stk);
     if (stk->size == 0) return SIZE_ERR;
     (stk->size)--;
     *value = stk->data[stk->size+1];
-    STACK_CHECK
+    STACK_CHECK(stk);
     return OK;
 }
 

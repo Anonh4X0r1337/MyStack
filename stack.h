@@ -65,10 +65,7 @@ stackErrors stackVerify (stack_t* stk, const char* file, size_t line, const char
 #define PRINT_ERR \
             fprintf (ERROR_FILE, "\nERROR in file - %s, in line - %zu, in function - %s\n", file, line, func);
 
-#define STACK_CHECK                                      \
-        if (stackVerify (stk, __FILE__, __LINE__, __func__))   \
-        {                                                      \
-            return stackDump (stk);                            \
-        }
+#define STACK_CHECK(stk);                                                   \
+        if (stackVerify (stk, __FILE__, __LINE__, __func__)) stackDump (stk);
 
 #endif // STACK_H
