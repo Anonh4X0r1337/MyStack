@@ -1,5 +1,6 @@
 #include "stack.h"
 #include <limits.h>
+#include <stdio.h>
 
 
 int main()
@@ -8,9 +9,10 @@ int main()
     stackElem value = {};
     size_t capacity = 1;
     stackCtor (&stk, capacity);
-    /*stackPush(&stk, 200);
+    stackPush(&stk, 200);
     stackPop(&stk, &value);
-    stackDtor(&stk);*/
+    printf ("%d", value);
+    stackDtor(&stk);
 
     return 0;
 }

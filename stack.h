@@ -45,7 +45,8 @@ enum stackErrors
     CAPACITY_ERR =      11,
     DUMPED =            12,
     STK_CANARY_ERR =    13,
-    ELEMENT_ERR =       14
+    ELEMENT_ERR =       14,
+    FILE_ERR =          15
 };
 
 stackErrors stackCtor (stack_t* stk, size_t capacity);
@@ -62,10 +63,14 @@ stackErrors stackVerify (stack_t* stk, const char* file, size_t line, const char
 
 #define SPEC "%d"
 
-#define PRINT_ERR \
-            fprintf (ERROR_FILE, "\nERROR in file - %s, in line - %zu, in function - %s\n", file, line, func);
+#define PRINT_STARS_IN(filename); \
+        fprintf (filename, "\n******************************************************\n\n"); //TODO - как-то скорректировать
 
-#define STACK_CHECK(stk);                                                   \
-        if (stackVerify (stk, __FILE__, __LINE__, __func__)) stackDump (stk);
+#define PRINT_ERR \
+        fprintf (ERROR_FILE, "\nERROR in file - %s, in line - %zu, in function - %s\n", file, line, func);
+
+#define STACK_CHECK(stk);                                \
+        stackVerify (stk, __FILE__, __LINE__, __func__); \
+        stackDump (stk);
 
 #endif // STACK_H
