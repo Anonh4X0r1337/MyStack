@@ -74,9 +74,9 @@ stackErrors stackDump (stack_t* stk, const char* func)
 
     fprintf (DUMP_FILE, "\ndata[RIGHT_CANARY]:"SPEC"\n", stk->data[stk->capacity+1]);
 
-    PRINT_STARS_IN(DUMP_FILE, func);
+    PRINT_STARS_IN(DUMP_FILE, "*********");
 
-    return DUMPED;
+    return OK;
 }
 
 
@@ -109,42 +109,41 @@ stackErrors stackVerify (stack_t* stk, const char* file, size_t line, const char
 {
     if (ERROR_FILE == nullptr) return FILE_ERR;
 
+    bool is_any_errors = 0;
+    //bool* errors = (bool*)calloc(8, sizeof(bool));
+
     PRINT_STARS_IN(ERROR_FILE, func);
 
     if (!stk)
     {
+        is_any_errors = 1;
         PRINT_ERR
-        fprintf (ERROR_FILE, "ERROR: Stack = NULL\n");
-        return STK_NULL;
+        fprintf (ERROR_FILE, "Stack = NULL\n");
+        //errors[STK_NULL] = 1;
     }
 
     if (stk->LEFT_СANARY != POISON)
     {
+        is_any_errors = 1;
         PRINT_ERR
-        fprintf (ERROR_FILE, "ERROR: Left canary hasn't POISON value\n");
-
-        if (stk->RIGHT_СANARY != POISON)
-        {
-            PRINT_ERR
-            fprintf (ERROR_FILE, "ERROR: Right canary hasn't POISON value\n");
-            return STK_CANARY_ERR;
-        }
-
-        return STK_CANARY_ERR;
+        fprintf (ERROR_FILE, "Left canary hasn't POISON value\n");
+        //errors[STK_CANARY_ERR] = 1;
     }
 
     if (stk->RIGHT_СANARY != POISON)
     {
+        is_any_errors = 1;
         PRINT_ERR
-        fprintf (ERROR_FILE, "ERROR: Right canary hasn't POISON value\n");
-        return STK_CANARY_ERR;
+        fprintf (ERROR_FILE, "Right canary hasn't POISON value\n");
+        //errors[STK_CANARY_ERR] = 1;
     }
 
     if (!(stk->data))
     {
+        is_any_errors = 1;
         PRINT_ERR
-        fprintf (ERROR_FILE, "ERROR: stk.data = NULL\n");
-        return DATA_EMPTY;
+        fprintf (ERROR_FILE, "stk.data = NULL\n");
+        //errors[DATA_EMPTY] = 1;
     }
 
     /*if (!memcmp (&(stk->data[0]), &(POISON), sizeof(POISON)))
@@ -169,23 +168,26 @@ stackErrors stackVerify (stack_t* stk, const char* file, size_t line, const char
 
     if (stk->size == INT_MAX)
     {
+        is_any_errors = 1;
         PRINT_ERR
-        fprintf (ERROR_FILE, "ERROR: wrong size\n");
-        return SIZE_ERR;
+        fprintf (ERROR_FILE, "wrong size\n");
+        //errors[SIZE_ERR] = 1;
     }
 
     if (stk->capacity == INT_MAX || stk->capacity < 1)
     {
+        is_any_errors = 1;
         PRINT_ERR
-        fprintf (ERROR_FILE, "ERROR: wrong capacity\n");
-        return CAPACITY_ERR;
+        fprintf (ERROR_FILE, "wrong capacity\n");
+        //errors[CAPACITY_ERR] = 1;
     }
 
     if (stk->size > stk->capacity)
     {
+        is_any_errors = 1;
         PRINT_ERR
-        fprintf (ERROR_FILE, "ERROR: size > capacity\n");
-        return SIZE_OVERFLOW;
+        fprintf (ERROR_FILE, "size > capacity\n");
+        //errors[SIZE_OVERFLOW] = 1;
     }
 
     bool flag_of_wrong_element = 1;
@@ -209,11 +211,13 @@ stackErrors stackVerify (stack_t* stk, const char* file, size_t line, const char
     }
     if (!flag_of_wrong_element)
     {
+        is_any_errors = 1;
         PRINT_ERR
-        return ELEMENT_ERR;
+        //errors[ELEMENT_ERR] = 1;
     }
 
-    PRINT_STARS_IN(ERROR_FILE, func);
+    if (!is_any_errors) fprintf (ERROR_FILE, "Everything is correct!\n");
+    PRINT_STARS_IN(ERROR_FILE, "*********");
 
     return OK;
 }
