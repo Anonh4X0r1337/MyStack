@@ -53,7 +53,7 @@ stackErrors stackCtor (stack_t* stk, size_t capacity);
 
 stackErrors stackDtor (stack_t* stk);
 
-stackErrors stackDump (stack_t* stk);
+stackErrors stackDump (stack_t* stk, const char* func);
 
 stackErrors stackPush (stack_t* stk, stackElem value);
 
@@ -63,14 +63,14 @@ stackErrors stackVerify (stack_t* stk, const char* file, size_t line, const char
 
 #define SPEC "%d"
 
-#define PRINT_STARS_IN(filename); \
-        fprintf (filename, "\n******************************************************\n\n"); //TODO - как-то скорректировать
+#define PRINT_STARS_IN(filename, calling_file); \
+        fprintf (filename, "\n************************%s****************************\n\n", func); //TODO - как-то скорректировать
 
 #define PRINT_ERR \
         fprintf (ERROR_FILE, "\nERROR in file - %s, in line - %zu, in function - %s\n", file, line, func);
 
 #define STACK_CHECK(stk);                                \
         stackVerify (stk, __FILE__, __LINE__, __func__); \
-        stackDump (stk);
+        stackDump (stk, __func__);
 
 #endif // STACK_H
